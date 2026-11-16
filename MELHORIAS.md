@@ -1,4 +1,4 @@
-# Melhorias para o site Jurandir Corretor de Imoveis
+# Melhorias para o site Jurandir Corretor de Imoveiss
 
 Dominio alvo: **jurandircorretordeimoveis.com**
 Arquivo: `index.html` (pagina unica, HTML + CSS + JS inline)
