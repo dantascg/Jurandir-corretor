@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow"><title>Painel de imóveis | Jurandir</title>
+  <link rel="stylesheet" href="painel.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-REPLACE_WITH_SRI_HASH" crossorigin="anonymous"></script>
+  <script src="../config.js"></script><script src="../data.js"></script><script src="painel.js" defer></script>
+</head>
+<body>
+  <main class="panel-shell">
+    <section id="login-view" class="login-card" aria-labelledby="login-title">
+      <p class="eyebrow">Área do corretor</p><h1 id="login-title">Seus imóveis, organizados.</h1>
+      <p class="muted">Entre com o e-mail e a senha definidos no Supabase.</p>
+      <form id="login-form"><label>E-mail<input id="login-email" type="email" autocomplete="username" required></label><label>Senha<input id="login-password" type="password" autocomplete="current-password" required></label><button class="button" type="submit">Entrar</button><p id="login-message" class="form-message" role="alert"></p></form>
+      <p class="mock-hint">Modo de demonstração: corretor@jurandir.local / mock-1234</p>
+    </section>
+    <section id="app-view" hidden>
+      <header class="panel-header"><div><p class="eyebrow">Painel do corretor</p><h1>Meus imóveis</h1></div><div class="header-actions"><button id="new-property" class="button" type="button">+ Novo imóvel</button><button id="logout" class="button secondary" type="button">Sair</button></div></header>
+      <div class="toolbar"><label class="search">Buscar imóvel<input id="property-search" type="search" placeholder="Título, bairro ou código"></label><p id="list-message" class="form-message" role="status"></p></div>
+      <div id="property-list" class="property-list"></div>
+    </section>
+    <section id="form-view" hidden>
+      <header class="panel-header"><div><p class="eyebrow">Cadastro</p><h1 id="form-title">Novo imóvel</h1></div><button id="back-list" class="button secondary" type="button">Voltar à lista</button></header>
+      <form id="property-form" novalidate>
+        <input id="property-id" type="hidden"><section class="form-section"><h2>Dados principais</h2><div class="form-grid"><label>Título *<input id="titulo" maxlength="120" required></label><label>Tipo<select id="tipo"><option value="apartamento">Apartamento</option><option value="casa">Casa</option><option value="sobrado">Sobrado</option><option value="terreno">Terreno</option><option value="comercial">Comercial</option><option value="outro">Outro</option></select></label><label>Finalidade<select id="finalidade"><option value="venda">Venda</option><option value="locacao">Locação</option></select></label><label>Situação<select id="situacao"><option value="pronto">Pronto</option><option value="na_planta">Na planta</option><option value="em_obras">Em obras</option></select></label><label>Preço (R$) *<input id="preco" type="number" min="0" step="0.01" required></label></div></section>
+        <section class="form-section"><h2>Localização</h2><div class="form-grid"><label>Bairro<input id="bairro" maxlength="120"></label><label>Cidade<input id="cidade" maxlength="120" value="Diadema"></label><label class="wide">Endereço interno <small>não aparece na vitrine pública</small><input id="endereco" maxlength="240"></label></div></section>
+        <section class="form-section"><h2>Características</h2><div class="form-grid"><label>Quartos<input id="quartos" type="number" min="0" max="100" value="0"></label><label>Suítes<input id="suites" type="number" min="0" max="100" value="0"></label><label>Banheiros<input id="banheiros" type="number" min="0" max="100" value="0"></label><label>Vagas<input id="vagas" type="number" min="0" max="100" value="0"></label><label>Área útil (m²)<input id="area_util_m2" type="number" min="0" step="0.01"></label><label>Área total (m²)<input id="area_total_m2" type="number" min="0" step="0.01"></label><label>Andar<input id="andar" type="number" min="0" max="200"></label></div></section>
+        <section class="form-section"><h2>Condições</h2><div class="form-grid"><label>Condomínio (R$)<input id="condominio" type="number" min="0" step="0.01"></label><label>IPTU (R$)<input id="iptu" type="number" min="0" step="0.01"></label></div><div class="checks"><label><input id="aceita_financiamento" type="checkbox"> Aceita financiamento</label><label><input id="minha_casa_minha_vida" type="checkbox"> Minha Casa Minha Vida</label><label><input id="aceita_fgts" type="checkbox"> Aceita FGTS</label></div></section>
+        <section class="form-section"><h2>Diferenciais</h2><div id="diferenciais" class="checks"></div></section>
+        <section class="form-section"><h2>Descrição</h2><label><textarea id="descricao" maxlength="4000" rows="7" placeholder="Conte os principais detalhes do imóvel"></textarea></label></section>
+        <section class="form-section"><h2>Fotos</h2><p class="muted">JPG, PNG, WebP ou HEIC. Até 15 fotos e 10 MB cada. A foto marcada como capa aparece primeiro.</p><input id="foto-input" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" multiple><div id="photo-status" class="form-message" role="status"></div><div id="photo-list" class="photo-list"></div></section>
+        <section class="form-section publish-row"><label><input id="publicado" type="checkbox" checked> Publicado na vitrine</label><label><input id="destaque" type="checkbox"> Destaque</label><label>Status<select id="status"><option value="disponivel">Disponível</option><option value="reservado">Reservado</option><option value="vendido">Vendido</option></select></label></section>
+        <p id="form-message" class="form-message" role="alert"></p><div class="form-actions"><button id="save-draft" class="button secondary" type="button">Salvar rascunho</button><button class="button" type="submit">Salvar imóvel</button></div>
+      </form>
+    </section>
+  </main>
+</body></html>

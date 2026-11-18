@@ -1,0 +1,11 @@
+-- Roteiro de validação. Execute o SQL estrutural como owner e repita as operações
+-- com clientes anon/authenticated. O SQL Editor como owner não representa anon.
+-- 1) Revisão: policies de imoveis só permitem insert/update/delete a authenticated + is_admin.
+-- 2) Revisão: select anon usa publicado=true; view não contém endereco.
+-- 3) Revisão: admins tem RLS e revoke all; só is_admin security definer consulta.
+-- 4) Revisão: usuário autenticado fora de admins falha em with check is_admin().
+-- 5) Revisão: Storage não possui policy de insert/delete para anon e não possui policy de listagem; leitura de objeto público é somente por URL.
+-- 6) Execução como owner: constraints abaixo devem falhar (cada bloco é uma tentativa isolada).
+-- insert into public.imoveis(titulo,tipo,finalidade,situacao,status,preco) values ('x','invalido','venda','pronto','disponivel',0);
+-- insert into public.imoveis(titulo,tipo,finalidade,situacao,status,preco,fotos) values ('x','casa','venda','pronto','disponivel',0,array_fill('https://x/storage/v1/object/public/imoveis-fotos/imoveis/00000000-0000-0000-0000-000000000000/0.webp'::text,array[16]));
+-- select column_name from information_schema.columns where table_schema='public' and table_name='imoveis_publicos' and column_name='endereco'; -- 0 linhas
