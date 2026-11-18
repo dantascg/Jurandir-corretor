@@ -1,7 +1,12 @@
 (function () {
   'use strict';
   var menu = document.getElementById('lh-nav'), burger = document.querySelector('.burger');
-  if (menu && burger) { burger.addEventListener('click', function () { var open = menu.classList.toggle('open'); burger.setAttribute('aria-expanded', String(open)); }); menu.querySelectorAll('a').forEach(function (link) { link.addEventListener('click', function () { menu.classList.remove('open'); burger.setAttribute('aria-expanded', 'false'); }); }); }
+  if (menu && burger) {
+    var closeMenu = function (restoreFocus) { menu.classList.remove('open'); burger.setAttribute('aria-expanded', 'false'); if (restoreFocus) burger.focus(); };
+    burger.addEventListener('click', function () { var open = !menu.classList.contains('open'); menu.classList.toggle('open', open); burger.setAttribute('aria-expanded', String(open)); if (open) { var firstLink = menu.querySelector('a'); if (firstLink) firstLink.focus(); } });
+    menu.addEventListener('keydown', function (event) { if (event.key === 'Escape') { event.preventDefault(); closeMenu(true); } });
+    menu.querySelectorAll('a').forEach(function (link) { link.addEventListener('click', function () { closeMenu(false); }); });
+  }
   var marquee = document.querySelector('.v-testimonials-marquee .grid');
   if (marquee) Array.from(marquee.querySelectorAll('.tst')).forEach(function (card) { var clone = card.cloneNode(true); clone.setAttribute('aria-hidden', 'true'); marquee.appendChild(clone); });
   if ('IntersectionObserver' in window) { var observer = new IntersectionObserver(function (entries) { entries.forEach(function (entry) { if (entry.isIntersecting) { entry.target.classList.add('in'); observer.unobserve(entry.target); } }); }); document.querySelectorAll('.reveal').forEach(function (element) { observer.observe(element); }); }
@@ -18,5 +23,34 @@
   function openModal(item) { var modal = el('div','property-modal'), dialog = el('div','property-dialog'); modal.setAttribute('role','dialog'); modal.setAttribute('aria-modal','true'); var close = el('button','property-dialog-close','×'); close.type='button'; close.setAttribute('aria-label','Fechar'); close.addEventListener('click', function(){modal.remove();}); dialog.appendChild(close); dialog.appendChild(el('h2','',item.titulo)); dialog.appendChild(el('p','property-location',[item.bairro,item.cidade].filter(Boolean).join(' · ') + ' · ' + brl(item.preco))); if (item.fotos && item.fotos.length) { var gallery = el('div','property-gallery'); item.fotos.forEach(function(url){var img=el('img');img.src=url;img.loading='lazy';img.alt=item.titulo;gallery.appendChild(img);}); dialog.appendChild(gallery); } if(item.descricao) dialog.appendChild(el('p','',item.descricao)); if(item.diferenciais && item.diferenciais.length) dialog.appendChild(el('p','', 'Diferenciais: ' + item.diferenciais.join(', '))); var link=el('a','property-interest','Tenho interesse pelo WhatsApp');link.href=wa(item);link.target='_blank';link.rel='noopener noreferrer';dialog.appendChild(link); modal.appendChild(dialog); modal.addEventListener('click',function(e){if(e.target===modal) modal.remove();}); document.body.appendChild(modal); close.focus(); }
   async function start() { state.textContent = 'Carregando imóveis…'; renderFilters(); try { all = await JurandirData.listPublic(); render(); } catch (_) { state.textContent = 'Não foi possível carregar os imóveis agora. Tente novamente mais tarde.'; } }
   async function start() { state.textContent = 'Carregando imóveis…'; renderFilters(); try { all = await JurandirData.listPublic(); render(); } catch (error) { state.textContent = 'Supabase: ' + (JurandirData.errorMessage ? JurandirData.errorMessage(error) : 'não foi possível carregar os imóveis.'); } }
+  var lastModalOpener = null, activeModal = null;
+  document.addEventListener('click', function (event) {
+    var cardButton = event.target.closest('.property-card-button');
+    if (cardButton) lastModalOpener = cardButton;
+  }, true);
+  var modalObserver = new MutationObserver(function () {
+    var modal = document.querySelector('.property-modal');
+    if (modal && modal !== activeModal) {
+      activeModal = modal;
+      modal.setAttribute('role', 'dialog');
+      modal.setAttribute('aria-modal', 'true');
+      var title = modal.querySelector('.property-dialog h2');
+      if (title) { title.id = 'property-dialog-title'; modal.setAttribute('aria-labelledby', 'property-dialog-title'); }
+      modal.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') { event.preventDefault(); modal.remove(); return; }
+        if (event.key !== 'Tab') return;
+        var focusable = modal.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])');
+        if (!focusable.length) return;
+        var first = focusable[0], last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+      });
+    }
+    if (activeModal && !document.contains(activeModal)) {
+      if (lastModalOpener && document.contains(lastModalOpener)) lastModalOpener.focus();
+      activeModal = null;
+    }
+  });
+  modalObserver.observe(document.body, { childList: true, subtree: true });
   start();
 })();
