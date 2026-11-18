@@ -6,3 +6,4 @@
 .panel-shell button,.panel-shell .button{min-height:44px;touch-action:manipulation}.panel-shell input,.panel-shell select,.panel-shell textarea{min-height:44px}
 .panel-shell,.panel-shell button,.panel-shell input,.panel-shell select,.panel-shell textarea{font-family:"Manrope",system-ui,sans-serif}.panel-shell h1,.panel-shell h2{font-family:"Cormorant Garamond",Georgia,serif}
 .mock-hint{display:none}.mock-hint.mock-visible{display:block}
+.photo-card{position:relative}.photo-card.is-processing{display:grid;place-items:center;background:#12110f}.photo-card.is-processing img{opacity:0}.photo-processing{position:absolute;inset:0;display:grid;place-items:center;color:var(--gold);font-size:12px}
