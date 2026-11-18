@@ -4,4 +4,5 @@
 .connection-status{width:min(100% - 32px,1080px);margin:18px auto 0;padding:10px 14px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--muted);text-align:center}.connection-status.connected{color:var(--gold);border-color:var(--gold)}.connection-status.error{color:var(--danger);border-color:var(--danger)}
 .photo-add{cursor:pointer}
 .panel-shell button,.panel-shell .button{min-height:44px;touch-action:manipulation}.panel-shell input,.panel-shell select,.panel-shell textarea{min-height:44px}
+.panel-shell,.panel-shell button,.panel-shell input,.panel-shell select,.panel-shell textarea{font-family:"Manrope",system-ui,sans-serif}.panel-shell h1,.panel-shell h2{font-family:"Cormorant Garamond",Georgia,serif}
 .mock-hint{display:none}.mock-hint.mock-visible{display:block}
