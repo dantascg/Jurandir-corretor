@@ -9,3 +9,24 @@
 -- insert into public.imoveis(titulo,tipo,finalidade,situacao,status,preco) values ('x','invalido','venda','pronto','disponivel',0);
 -- insert into public.imoveis(titulo,tipo,finalidade,situacao,status,preco,fotos) values ('x','casa','venda','pronto','disponivel',0,array_fill('https://x/storage/v1/object/public/imoveis-fotos/imoveis/00000000-0000-0000-0000-000000000000/0.webp'::text,array[16]));
 -- select column_name from information_schema.columns where table_schema='public' and table_name='imoveis_publicos' and column_name='endereco'; -- 0 linhas
+
+-- Testes de sessão/role (execute cada bloco com o cliente/usuário indicado;
+-- o SQL Editor como owner não prova o comportamento de anon).
+-- a) anon: deve falhar por falta de privilégio/coluna e RLS:
+-- set role anon;
+-- select endereco from public.imoveis;
+-- reset role;
+-- b) anon: deve funcionar e nunca retornar endereco:
+-- set role anon;
+-- select * from public.imoveis_publicos;
+-- reset role;
+-- c) admin autenticado: deve funcionar após UUID estar em public.admins:
+-- set role authenticated;
+-- insert into public.imoveis(titulo,tipo,finalidade,situacao,status,preco) values ('Teste admin','casa','venda','pronto','disponivel',1);
+-- update public.imoveis set titulo = 'Teste admin atualizado' where titulo = 'Teste admin';
+-- delete from public.imoveis where titulo = 'Teste admin atualizado';
+-- reset role;
+-- d) authenticated não-admin: insert deve falhar pela policy imoveis_admin_insert:
+-- set role authenticated;
+-- insert into public.imoveis(titulo,tipo,finalidade,situacao,status,preco) values ('Teste não-admin','casa','venda','pronto','disponivel',1);
+-- reset role;
