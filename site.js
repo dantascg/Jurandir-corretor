@@ -3,6 +3,8 @@
   var menu = document.getElementById('lh-nav'), burger = document.querySelector('.burger');
   if (menu && burger) { burger.addEventListener('click', function () { var open = !menu.classList.contains('open'); menu.classList.toggle('open', open); burger.setAttribute('aria-expanded', String(open)); }); menu.querySelectorAll('a').forEach(function (link) { link.addEventListener('click', function () { menu.classList.remove('open'); burger.setAttribute('aria-expanded', 'false'); }); }); }
   if ('IntersectionObserver' in window) { var observer = new IntersectionObserver(function (entries) { entries.forEach(function (entry) { if (entry.isIntersecting) { entry.target.classList.add('in'); observer.unobserve(entry.target); } }); }); document.querySelectorAll('.reveal').forEach(function (element) { observer.observe(element); }); }
+  var marquee = document.querySelector('.v-testimonials-marquee .grid');
+  if (marquee) { var originals = Array.prototype.slice.call(marquee.children), targetCopies = Math.max(4, Math.ceil((window.innerWidth * 2) / Math.max(1, originals.length * 356))); if (targetCopies % 2) targetCopies += 1; for (var copyIndex = 1; copyIndex < targetCopies; copyIndex += 1) originals.forEach(function (card) { var clone = card.cloneNode(true); clone.setAttribute('aria-hidden', 'true'); marquee.appendChild(clone); }); }
   var grid = document.getElementById('property-grid'), state = document.getElementById('property-state'), filters = document.getElementById('property-filters');
   if (!grid || !window.JurandirData) return;
   var all = [], filter = { finalidade: '', tipo: '' }, lastOpener = null;

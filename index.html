@@ -201,12 +201,12 @@
   .v-testimonials-grandes .grid{grid-template-columns:1fr;max-width:820px;margin:0 auto}
   .v-testimonials-grandes .quote{font-size:calc(clamp(20px,3vw,30px) * var(--tscale));line-height:1.4;font-family:"var-display"}
   .v-testimonials-marquee{overflow:hidden}
-  .v-testimonials-marquee .grid{display:flex;grid-template-columns:none;gap:16px;width:max-content;max-width:none;margin:0;animation-name:lh-marquee;animation-duration:90s;animation-timing-function:linear;animation-iteration-count:infinite;animation-fill-mode:none;will-change:transform}
-  .v-testimonials-marquee .card{width:340px;flex:0 0 340px}
+  .v-testimonials-marquee .grid{display:flex;grid-template-columns:none;gap:0;width:max-content;max-width:none;margin:0;animation-name:lh-marquee;animation-duration:90s;animation-timing-function:linear;animation-iteration-count:infinite;animation-fill-mode:none;will-change:transform}
+  .v-testimonials-marquee .card{width:340px;flex:0 0 340px;margin-right:16px}
   .v-testimonials-marquee:hover .grid{animation-play-state:running}
   .v-testimonials-marquee .quote{font-family:"Manrope",system-ui,sans-serif;font-size:16px;line-height:1.55}
   .v-testimonials-marquee .author-row{margin-top:16px}
-  @keyframes lh-marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  @keyframes lh-marquee{from{transform:translateX(-25%)}to{transform:translateX(-75%)}}
 
   /* ---------- faq ---------- */
   .v-faq-colunas .faq{columns:1;column-gap:40px}
@@ -343,7 +343,8 @@
     @keyframes lh-rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
   }
   @media (prefers-reduced-motion:reduce){.reveal,.grid .card{opacity:1!important;transform:none!important}}
-  @media (prefers-reduced-motion:reduce){.v-testimonials-marquee .grid{overflow-x:hidden;width:max-content}.v-testimonials-marquee .card{flex:0 0 min(86vw,340px)}}
+  @media(min-width:760px){.v-testimonials-marquee .grid{position:relative;left:50%;margin-left:-50vw}.v-testimonials-marquee .card{margin-right:16px}}
+  @media (prefers-reduced-motion:reduce){.v-testimonials-marquee .grid{animation:none;transform:none;overflow-x:auto;width:max-content}.v-testimonials-marquee .card{flex:0 0 min(86vw,340px)}}
 </style>
 </head>
 <body>
@@ -401,7 +402,7 @@
         <p class="section-sub">Atendimento completo para comprar, vender ou alugar.</p>
       </div>
       <div class="grid">
-        <div class="card svc" style="--d:0ms"><span class="card-num">01</span><span class="svc-icon">C</span><div class="card-body"><h3>Compra e venda</h3><p>Curadoria de imóveis e negociação transparente do início ao fim.</p><a class="svc-link" href="https://wa.me/5511959003321" target="_blank" rel="noopener noreferrer">Solicitar</a></div></div><div class="card svc" style="--d:80ms"><span class="card-num">02</span><span class="svc-icon">L</span><div class="card-body"><h3>Locação sem dor de cabeça</h3><p>Análise de crédito, contrato e vistoria conduzidos pela equipe.</p><a class="svc-link" href="https://wa.me/5511959003321" target="_blank" rel="noopener noreferrer">Solicitar</a></div></div><div class="card svc" style="--d:160ms"><span class="card-num">03</span><span class="svc-icon">A</span><div class="card-body"><h3>Avaliação de imóvel</h3><p>Precificação baseada em dados reais da região.</p><a class="svc-link" href="https://wa.me/5511959003321" target="_blank" rel="noopener noreferrer">Solicitar</a></div></div>
+<div class="card svc" style="--d:0ms"><span class="card-num">01</span><span class="svc-icon">C</span><div class="card-body"><h3>Compra e venda</h3><p>Curadoria de imóveis e negociação transparente do início ao fim.</p><a class="svc-link" href="https://wa.me/5511959003321" target="_blank" rel="noopener noreferrer">Solicitar</a></div></div><div class="card svc" style="--d:80ms"><span class="card-num">02</span><span class="svc-icon">L</span><div class="card-body"><h3>Locação sem dor de cabeça</h3><p>Análise de crédito, contrato e vistoria conduzidos pela equipe.</p><a class="svc-link" href="https://wa.me/5511959003321" target="_blank" rel="noopener noreferrer">Solicitar</a></div></div><div class="card svc" style="--d:160ms"><span class="card-num">03</span><span class="svc-icon">A</span><div class="card-body"><h3>Avaliação de imóvel</h3><p>Precificação baseada em dados reais da região.</p><a class="svc-link" href="https://wa.me/5511959003321" target="_blank" rel="noopener noreferrer">Solicitar</a></div></div><div class="card svc" style="--d:240ms"><span class="card-num">04</span><span class="svc-icon">F</span><div class="card-body"><h3>Financiamento e Minha Casa Minha Vida</h3><p>Simulação, documentação e orientação sobre FGTS e financiamento bancário, do início até a aprovação.</p><a class="svc-link" href="https://wa.me/5511959003321" target="_blank" rel="noopener noreferrer">Solicitar</a></div></div>
       </div>
     </div>
   </section>

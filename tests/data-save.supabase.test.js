@@ -27,3 +27,31 @@ test('editar no Supabase usa update/eq(id), nunca insert', async () => {
   assert.deepEqual(calls.find((call) => call[0] === 'eq'), ['eq', 'id', 'imovel-123']);
   assert.equal(calls.filter((call) => call[0] === 'insert').length, 0);
 });
+
+test('ciclo mock: criar, editar, duplicar, editar cópia e excluir original', async () => {
+  const storage = new Map([['jurandir_imoveis_mock_v1', '[]']]);
+  const context = {
+    window: { JURANDIR_CONFIG: { MODO: 'mock' } },
+    localStorage: { getItem: (key) => storage.get(key) || null, setItem: (key, value) => storage.set(key, value) },
+    sessionStorage: { getItem: () => null, setItem: () => {}, removeItem: () => {} },
+    crypto: { randomUUID: (() => { let n = 0; return () => `mock-${++n}`; })() },
+    Date, JSON, Promise, String, Number, Math
+  };
+  context.window.localStorage = context.localStorage;
+  context.window.sessionStorage = context.sessionStorage;
+  vm.createContext(context);
+  vm.runInContext(fs.readFileSync('data.js', 'utf8'), context);
+  const api = context.window.JurandirData;
+  const original = await api.save({ titulo: 'Casa teste', fotos: ['data:image/webp;base64,original'] });
+  const edited = await api.save({ id: original.id, titulo: 'Casa editada', fotos: original.fotos });
+  assert.equal(edited.id, original.id);
+  assert.equal(edited.codigo, original.codigo);
+  assert.equal((await api.listAdmin()).length, 1);
+  const copy = await api.duplicate(original.id);
+  assert.notEqual(copy.id, original.id);
+  const copyEdited = await api.save({ id: copy.id, titulo: 'Cópia editada', fotos: copy.fotos });
+  await api.remove(original.id);
+  const remaining = await api.get(copyEdited.id);
+  assert.equal((await api.listAdmin()).length, 1);
+  assert.deepEqual(remaining.fotos, ['data:image/webp;base64,original']);
+});

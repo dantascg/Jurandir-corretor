@@ -35,7 +35,26 @@
       return checkError(await getClient().from('imoveis').update(data).eq('id', propertyId).select().single());
     },
     remove: async function (propertyId) { if (usingMock()) { writeMock(readMock().filter(function (x) { return x.id !== propertyId; })); return true; } return checkError(await getClient().from('imoveis').delete().eq('id', propertyId)); },
-    duplicate: async function (propertyId) { var original = await api.get(propertyId); if (!original) throw new Error('Imóvel não encontrado.'); var copy = Object.assign({}, original); delete copy.id; delete copy.codigo; copy.titulo = original.titulo + ' (cópia)'; copy.publicado = false; copy.destaque = false; return api.save(copy); },
+    duplicate: async function (propertyId) {
+      var original = await api.get(propertyId); if (!original) throw new Error('Imóvel não encontrado.');
+      var copy = Object.assign({}, original); delete copy.id; delete copy.codigo; copy.titulo = original.titulo + ' (cópia)'; copy.publicado = false; copy.destaque = false;
+      if (usingMock()) return api.save(copy);
+      copy.fotos = [];
+      var created = await api.save(copy), storage = getClient().storage.from('imoveis-fotos'), copiedPaths = [], urls = [];
+      try {
+        for (var index = 0; index < (original.fotos || []).length; index += 1) { var url = original.fotos[index];
+          var marker = '/storage/v1/object/public/imoveis-fotos/', value = String(url || ''), at = value.indexOf(marker);
+          if (at < 0) throw new Error('Foto sem caminho válido para duplicação.');
+          var source = decodeURIComponent(value.slice(at + marker.length)).replace(/[?#].*$/, ''), destination = 'imoveis/' + created.id + '/' + index + '.webp', thumbSource = source.replace(/\.webp$/, '_t.webp'), thumbDestination = 'imoveis/' + created.id + '/' + index + '_t.webp';
+          copiedPaths.push(destination, thumbDestination); checkError(await storage.copy(source, destination)); checkError(await storage.copy(thumbSource, thumbDestination)); urls.push(storage.getPublicUrl(destination).data.publicUrl);
+        }
+        return api.save(Object.assign({}, created, { id: created.id, fotos: urls }));
+      } catch (error) {
+        if (copiedPaths.length) await storage.remove(copiedPaths);
+        await api.remove(created.id);
+        throw error;
+      }
+    },
     login: async function (email, password) { if (usingMock()) { if (email === 'corretor@jurandir.local' && password === 'mock-1234') { sessionStorage.setItem(SESSION, '1'); return { user: { email: email } }; } throw new Error('Não foi possível entrar.'); } return checkError(await getClient().auth.signInWithPassword({ email: email, password: password })); },
     logout: async function () { if (usingMock()) { sessionStorage.removeItem(SESSION); return; } checkError(await getClient().auth.signOut()); },
     session: async function () { if (usingMock()) return sessionStorage.getItem(SESSION) ? { user: { email: 'corretor@jurandir.local' } } : null; return checkError(await getClient().auth.getSession()).session; },
