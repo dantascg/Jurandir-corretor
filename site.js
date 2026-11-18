@@ -52,5 +52,17 @@
     }
   });
   modalObserver.observe(document.body, { childList: true, subtree: true });
+  var propertyImageObserver = new MutationObserver(function () {
+    document.querySelectorAll('.property-card').forEach(function (card) {
+      var title = card.querySelector('.property-card-title'), image = card.querySelector('img');
+      if (image && title) image.alt = title.textContent.trim() + ' foto 1';
+    });
+    document.querySelectorAll('.property-modal').forEach(function (modal) {
+      var title = modal.querySelector('.property-dialog h2');
+      if (!title) return;
+      modal.querySelectorAll('.property-gallery img').forEach(function (image, index) { image.alt = title.textContent.trim() + ' foto ' + (index + 1); });
+    });
+  });
+  propertyImageObserver.observe(document.body, { childList: true, subtree: true });
   start();
 })();
